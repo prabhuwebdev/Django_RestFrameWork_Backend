@@ -14,6 +14,7 @@ from rest_framework.authentication import BasicAuthentication,TokenAuthenticatio
 class RegisterApi(APIView):
     def post(self,request):
         data=request.data
+        print((request.data))
         serializer=RegisterSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -48,7 +49,7 @@ class PersonApi(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     def get(self,request):
-        print(request.user)
+        print(request.data)
         objs = Person.objects.all()
         # objs=Person.objects.filter(color__isnull=False)
         serializer = personserializer(objs, many=True)
