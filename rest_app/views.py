@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import BasicAuthentication,TokenAuthentication
+from rest_framework import status
 
 
 
@@ -34,14 +35,20 @@ class LoginApi(APIView):
             return Response({
                 "Result": "not valid"
 
-            })
+            },status=status.HTTP_400_BAD_REQUEST)
         print(serializer.data)
         user = authenticate(username=serializer.data['username'],password=serializer.data['password'])
+        if not user:
+            return Response({
+                "user":"invalid credentials"
+            },status=status.HTTP_404_NOT_FOUND)
         token,_=Token.objects.get_or_create(user=user)
+        print(token.key)
         return Response({
             "message":"successfully login",
-            "token":str(token)
+            "token":token.key
         })
+
 
 
 
